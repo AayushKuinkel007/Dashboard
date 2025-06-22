@@ -1,8 +1,11 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import { ToastContainer, toast } from "react-toastify";
+import 'react-toastify/dist/ReactToastify.css';
+
 const Signup = () => {
-  const navigate = useNavigate;
+  const navigate = useNavigate(); // ❗️Fixed: added parentheses to useNavigate()
   const [formData, setFormData] = useState({
     fname: "",
     lname: "",
@@ -21,9 +24,23 @@ const Signup = () => {
   };
 
   const handleSubmit = async (e) => {
+    e.preventDefault(); // ❗️Moved up to prevent accidental refresh
+
     try {
-      e.preventDefault();
       console.log("Form submitted:", formData);
+
+      const response = await axios.post(
+        "http://localhost:3000/signup/senduserdata",
+        formData
+      );
+
+      toast.success("Signup Successful!", {
+        position: "top-right",
+        autoClose: 3000,
+        hideProgressBar: false,
+        theme: "colored",
+      });
+
       setFormData({
         fname: "",
         lname: "",
@@ -31,18 +48,26 @@ const Signup = () => {
         email: "",
         password: "",
       });
-      const response = await axios.post(
-        "http://localhost:3000/signup/sendsignupdata",
-        formData
-      );
+
+      // Optional redirect after successful signup
+      // setTimeout(() => navigate("/login"), 3000);
+
       console.log("Signup Successful", response);
     } catch (err) {
-      console.log();
+      console.error("Signup Failed", err);
+
+      toast.error("Signup Failed. Please try again.", {
+        position: "top-right",
+        autoClose: 3000,
+        hideProgressBar: false,
+        theme: "colored",
+      });
     }
   };
 
   return (
     <div className="container">
+      <ToastContainer /> {/* ✅ Toast display container */}
       <div className="row mt-3">
         <h3 className="text-center">Signup</h3>
         <div className="col-md-6 offset-md-3">

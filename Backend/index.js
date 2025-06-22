@@ -1,23 +1,23 @@
-const express = require('express')
-const cors = require('cors')
-const path = require('path')
-const connectDB = require('./config/db')
-const userRouter = require('./routes/userroute')
-const app = express()
-const PORT = 3000
+const express = require("express");
+const cors = require("cors");
+const connectDB = require("./config/db");
+const userRouter = require("./routes/userroute");
 
-// middleware
-app.use(cors())
-app.use(express.urlencoded({extended:true}))
-app.use(express.json())
+const app = express();
+const PORT = 3000;
 
-// db connection
-connectDB()
+// Middleware
+app.use(cors());
+app.use(express.urlencoded({ extended: true }));
+app.use(express.json());
 
-// routes
-app.use('/signup',userRouter)
+// Connect to MongoDB
+connectDB();
 
-// server
+// Routes
+app.use("/signup", userRouter);
+
+// Start Server
 app.listen(PORT, () => {
-    console.log(`Server is running on http://localhost:${PORT}`);
-})
+  console.log(`Server is running on http://localhost:${PORT}`);
+});
