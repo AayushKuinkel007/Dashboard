@@ -1,11 +1,20 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { ToastContainer, toast } from "react-toastify";
-import 'react-toastify/dist/ReactToastify.css';
+import "react-toastify/dist/ReactToastify.css";
 import { API } from "../../utils/ApiRoute";
+import LoadingComponent from "../../component/Common/Dashboard/LoadingComponent";
+import Navbar from "../../component/Common/Navbar";
 
 const Signup = () => {
+  const [loading, setLoading] = useState(true); // ✅ Fix here
+
+  useEffect(() => {
+    const timer = setTimeout(() => setLoading(false), 1000);
+    return () => clearTimeout(timer);
+  }, []);
+
   const navigate = useNavigate(); // ❗️Fixed: added parentheses to useNavigate()
   const [formData, setFormData] = useState({
     fname: "",
@@ -30,10 +39,7 @@ const Signup = () => {
     try {
       console.log("Form submitted:", formData);
 
-      const response = await axios.post(
-        `${API}signup/senduserdata`,
-        formData
-      );
+      const response = await axios.post(`${API}signup/senduserdata`, formData);
 
       toast.success("Signup Successful!", {
         position: "top-right",
@@ -67,71 +73,82 @@ const Signup = () => {
   };
 
   return (
-    <div className="container">
-      <ToastContainer /> {/* ✅ Toast display container */}
-      <div className="row mt-3">
-        <h3 className="text-center">Signup</h3>
-        <div className="col-md-6 offset-md-3">
-          <form
-            className="border border-black rounded p-3"
-            onSubmit={handleSubmit}
-          >
-            <div className="d-flex">
-              <input
-                type="text"
-                name="fname"
-                id="fname"
-                placeholder="First Name"
-                className="form-control mb-2"
-                value={formData.fname}
-                onChange={handleChange}
-              />
-              <input
-                type="text"
-                name="lname"
-                id="lname"
-                placeholder="Last Name"
-                className="form-control mb-2 ms-2"
-                value={formData.lname}
-                onChange={handleChange}
-              />
+    <>
+      {loading ? (
+        <>
+          <LoadingComponent/>
+        </>
+      ) : (
+        <>
+          <Navbar/>
+          <div className="container">
+            <ToastContainer /> {/* ✅ Toast display container */}
+            <div className="row mt-3">
+              <h3 className="text-center">Signup</h3>
+              <div className="col-md-6 offset-md-3">
+                <form
+                  className="border border-black rounded p-3"
+                  onSubmit={handleSubmit}
+                >
+                  <div className="d-flex">
+                    <input
+                      type="text"
+                      name="fname"
+                      id="fname"
+                      placeholder="First Name"
+                      className="form-control mb-2"
+                      value={formData.fname}
+                      onChange={handleChange}
+                    />
+                    <input
+                      type="text"
+                      name="lname"
+                      id="lname"
+                      placeholder="Last Name"
+                      className="form-control mb-2 ms-2"
+                      value={formData.lname}
+                      onChange={handleChange}
+                    />
+                  </div>
+                  <input
+                    type="date"
+                    name="dateofbirth"
+                    id="dateofbirth"
+                    placeholder="Date of Birth"
+                    className="form-control mb-2"
+                    value={formData.dateofbirth}
+                    onChange={handleChange}
+                  />
+                  <input
+                    type="email"
+                    name="email"
+                    id="email"
+                    placeholder="Email"
+                    className="form-control mb-2"
+                    value={formData.email}
+                    onChange={handleChange}
+                  />
+                  <input
+                    type="password"
+                    name="password"
+                    id="password"
+                    placeholder="Password"
+                    className="form-control mb-2"
+                    value={formData.password}
+                    onChange={handleChange}
+                  />
+                  <div className="d-flex justify-content-center">
+                    <button type="submit" className="btn btn-lg btn-primary">
+                      Signup
+                    </button>
+                  </div>
+                </form>
+              </div>
             </div>
-            <input
-              type="date"
-              name="dateofbirth"
-              id="dateofbirth"
-              placeholder="Date of Birth"
-              className="form-control mb-2"
-              value={formData.dateofbirth}
-              onChange={handleChange}
-            />
-            <input
-              type="email"
-              name="email"
-              id="email"
-              placeholder="Email"
-              className="form-control mb-2"
-              value={formData.email}
-              onChange={handleChange}
-            />
-            <input
-              type="password"
-              name="password"
-              id="password"
-              placeholder="Password"
-              className="form-control mb-2"
-              value={formData.password}
-              onChange={handleChange}
-            />
-            <div className="d-flex justify-content-center">
-              <button type="submit" className="btn btn-lg btn-primary">
-                Signup
-              </button>
-            </div>
-          </form>
-        </div>
-      </div>
-    </div>
+          </div>
+        </>
+      )}
+    </>
   );
 };
 

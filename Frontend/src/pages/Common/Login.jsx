@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import LoadingComponent from "../../component/Common/LoadingComponent";
+import LoadingComponent from "../../component/Common/Dashboard/LoadingComponent";
 
 const Login = () => {
   const [loading, setLoading] = useState(true); // ✅ Fix here
@@ -34,7 +34,7 @@ const Login = () => {
   return (
     <>
       {loading ? (
-        <LoadingComponent />
+        <LoadingComponent/>
       ) : (
         <div className="container">
           <div className="row mt-3">

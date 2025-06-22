@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
-import LoadingComponent from "../../component/Common/LoadingComponent";
+import LoadingComponent from "../../component/Common/Dashboard/LoadingComponent";
+import Navbar from "../../component/Common/Navbar";
 
 const Homepage = () => {
   const [loading, setLoading] = useState(true); // ✅ Fix here
@@ -13,12 +14,13 @@ const Homepage = () => {
     <>
       {loading ? (
         <>
-          <LoadingComponent />
+          <LoadingComponent/>
         </>
       ) : (
-        <></>
+        <>
+        <Navbar/>
+        </>
       )}
-      <div>Homepage</div>
     </>
   );
 };
