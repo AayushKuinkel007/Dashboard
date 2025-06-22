@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { ToastContainer, toast } from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
+import { API } from "../../utils/ApiRoute";
 
 const Signup = () => {
   const navigate = useNavigate(); // ❗️Fixed: added parentheses to useNavigate()
@@ -30,7 +31,7 @@ const Signup = () => {
       console.log("Form submitted:", formData);
 
       const response = await axios.post(
-        "http://localhost:3000/signup/senduserdata",
+        `${API}signup/senduserdata`,
         formData
       );
 

@@ -1,8 +1,30 @@
-import React from 'react'
+import React, { useState } from 'react'
+import LoadingComponent from '../../component/Common/LoadingComponent'
 
 const Homepage = () => {
+
+  // const [loading,setloading] = useState(true)
+
+
   return (
-    <div>Homepage</div>
+    <>
+      {/* {
+        loading ? 
+        (
+          <>
+          <LoadingComponent/>
+          </>
+        ):
+        (
+          <>
+          
+          </>
+        )
+      } */}
+      <div>
+        Homepage
+      </div>
+    </>
   )
 }
 
