@@ -1,7 +1,7 @@
 import React from "react";
-import HeaderComponent from "./Common/HeaderComponent";
-import SidebarComponent from "./Common/SidebarComponent";
-import FooterComponent from "./Common/FooterComponent";
+import HeaderComponent from "../Common/HeaderComponent";
+import SidebarComponent from "../Common/SidebarComponent";
+import FooterComponent from "../Common/FooterComponent";
 
 const WeblayoutComponent = ({ children }) => {
   return (

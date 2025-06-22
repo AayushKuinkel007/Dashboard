@@ -3,8 +3,8 @@ import { BrowserRouter, Route, Routes } from "react-router-dom";
 import DashboardPage from "./pages/Admin/DashboardPage";
 import ProductsPage from "./pages/Admin/ProductsPage";
 import CreateProduct from "./pages/Admin/CreateProduct";
-import Signup from "./pages/Admin/Common/Signup";
-import Login from "./pages/Admin/Common/Login";
+import Signup from "./pages/Common/Signup";
+import Login from "./pages/Common/Login";
 
 const App = () => {
   return (
