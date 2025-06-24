@@ -3,7 +3,7 @@ const bcrypt = require('bcrypt');
 
 exports.sendUserData = async (req, res) => {
   try {
-    const { fname, lname, dateofbirth, email, password } = req.body;
+    const { fname, lname, dateofbirth, email, password,role } = req.body;
 
     console.log("Received Data:", req.body);
     
@@ -16,7 +16,9 @@ exports.sendUserData = async (req, res) => {
     const hashedPassword = await bcrypt.hash(password,16)
 
     const user = await User.create({
-      name,
+      fname,
+      lname,
+      dateofbirth,
       email,
       password: hashedPassword,
       role
@@ -27,7 +29,6 @@ exports.sendUserData = async (req, res) => {
       name: user.name,
       email: user.email,
       role: user.role,
-      token: generateToken(user._id, user.role)
       })
     }
     else{
@@ -44,20 +45,20 @@ exports.sendUserData = async (req, res) => {
   }
 };
 
-exports.loginUser = async (req, res) => {
-  const { email, password } = req.body;
-
-  const user = await User.findOne({ email });
-
-  if (user && (await bcrypt.compare(password, user.password))) {
+exports.login = async(req,res)=>{
+    const {email,password} = req.body;
+    const user = await User.findOne({
+        email
+    })
+    if(!user||!await bcrypt.compare(password,user.password) ){
+        return res.status(401).json({error:"invalid credentials"})
+    }
+    const token = jwt.sign({
+        id:user._id
+    },jwtSecret,{
+        expiresIn:'2h'
+    })
     res.json({
-      _id: user._id,
-      name: user.name,
-      email: user.email,
-      role: user.role,
-      token: generateToken(user._id, user.role)
-    });
-  } else {
-    res.status(401).json({ message: 'Invalid email or password' });
-  }
-};
+        token
+    })
+}

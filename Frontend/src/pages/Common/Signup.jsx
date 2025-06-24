@@ -1,21 +1,26 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { API } from "../../utils/ApiRoute";
+import { useDispatch, useSelector } from "react-redux";
+import { signupUser } from "../../slices/User/signupActions";
 import LoadingComponent from "../../component/Common/Dashboard/LoadingComponent";
 import Navbar from "../../component/Common/Navbar";
 
 const Signup = () => {
-  const [loading, setLoading] = useState(true);
+  const [loadingScreen, setLoadingScreen] = useState(true);
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
+  const { loading, error, success } = useSelector(
+    (state) => state.signedDataShow
+  );
 
   useEffect(() => {
-    const timer = setTimeout(() => setLoading(false), 1000);
+    const timer = setTimeout(() => setLoadingScreen(false), 1000);
     return () => clearTimeout(timer);
   }, []);
 
-  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     fname: "",
     lname: "",
@@ -35,29 +40,17 @@ const Signup = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
     if (!formData.role) {
-      toast.error("Please select a role.", {
-        position: "top-right",
-        autoClose: 3000,
-        hideProgressBar: false,
-        theme: "colored",
-      });
+      toast.error("Please select a role.");
       return;
     }
 
-    try {
-      console.log("Form submitted:", formData);
+    dispatch(signupUser(formData));
+  };
 
-      const response = await axios.post(`${API}signup/senduserdata`, formData);
-
-      toast.success("Signup Successful!", {
-        position: "top-right",
-        autoClose: 3000,
-        hideProgressBar: false,
-        theme: "colored",
-      });
-
+  useEffect(() => {
+    if (success) {
+      toast.success("Signup Successful!");
       setFormData({
         fname: "",
         lname: "",
@@ -67,21 +60,20 @@ const Signup = () => {
         role: "",
       });
 
-      console.log("Signup Successful", response);
-    } catch (err) {
-      console.error("Signup Failed", err);
-      toast.error("Signup Failed. Please try again.", {
-        position: "top-right",
-        autoClose: 3000,
-        hideProgressBar: false,
-        theme: "colored",
-      });
+      // ✅ Delay navigation to allow user to see the success toast
+      setTimeout(() => {
+        navigate("/login");
+      }, 2000);
     }
-  };
+
+    if (error) {
+      toast.error(error);
+    }
+  }, [success, error, navigate]);
 
   return (
     <>
-      {loading ? (
+      {loadingScreen ? (
         <LoadingComponent />
       ) : (
         <>
@@ -91,7 +83,10 @@ const Signup = () => {
             <div className="row mt-3">
               <h3 className="text-center">Signup</h3>
               <div className="col-md-6 offset-md-3">
-                <form className="border border-black rounded p-3" onSubmit={handleSubmit}>
+                <form
+                  className="border border-black rounded p-3"
+                  onSubmit={handleSubmit}
+                >
                   <div className="d-flex">
                     <input
                       type="text"
@@ -153,8 +148,12 @@ const Signup = () => {
                   </select>
 
                   <div className="d-flex justify-content-center">
-                    <button type="submit" className="btn btn-lg btn-primary">
-                      Signup
+                    <button
+                      type="submit"
+                      className="btn btn-lg btn-primary"
+                      disabled={loading}
+                    >
+                      {loading ? "Signing up..." : "Signup"}
                     </button>
                   </div>
                 </form>
