@@ -1,8 +1,16 @@
 import React, { useEffect, useState } from "react";
 import LoadingComponent from "../../component/Common/Dashboard/LoadingComponent";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
+import { API } from "../../utils/ApiRoute";
+import { useAuth } from "../../auth/Authcontext";
 
 const Login = () => {
-  const [loading, setLoading] = useState(true); // ✅ Fix here
+  const [loading, setLoading] = useState(true);
+  const navigate = useNavigate();
+  const { setAuth } = useAuth(); // 👈 use context to set user & token
 
   useEffect(() => {
     const timer = setTimeout(() => setLoading(false), 1000);
@@ -22,19 +30,56 @@ const Login = () => {
     }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("Form submitted:", formData);
-    setFormData({
-      email: "",
-      password: "",
-    });
+
+    if (!formData.email || !formData.password) {
+      toast.error("Please fill in all fields", {
+        position: "top-right",
+        autoClose: 3000,
+        theme: "colored",
+      });
+      return;
+    }
+
+    try {
+      const response = await axios.post(`${API}users/login`, formData);
+
+      const { token } = response.data;
+
+      const user = { email: formData.email };
+      only;
+
+      setAuth({ user, token });
+      localStorage.setItem("auth", JSON.stringify({ user, token }));
+
+      toast.success("Login Successful!", {
+        position: "top-right",
+        autoClose: 3000,
+        theme: "colored",
+      });
+
+      setTimeout(() => {
+        navigate("/user");
+      }, 2000);
+    } catch (err) {
+      const msg =
+        err.response?.data?.message ||
+        err.response?.data?.error ||
+        "Login failed. Please try again.";
+      toast.error(msg, {
+        position: "top-right",
+        autoClose: 3000,
+        theme: "colored",
+      });
+    }
   };
 
   return (
     <>
+      <ToastContainer />
       {loading ? (
-        <LoadingComponent/>
+        <LoadingComponent />
       ) : (
         <div className="container">
           <div className="row mt-3">
@@ -52,6 +97,7 @@ const Login = () => {
                   className="form-control mb-2"
                   value={formData.email}
                   onChange={handleChange}
+                  required
                 />
                 <input
                   type="password"
@@ -61,6 +107,7 @@ const Login = () => {
                   className="form-control mb-2"
                   value={formData.password}
                   onChange={handleChange}
+                  required
                 />
                 <div className="d-flex justify-content-center">
                   <button type="submit" className="btn btn-lg btn-primary">

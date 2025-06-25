@@ -1,14 +1,6 @@
-import React, { useEffect, useState } from "react";
-import WeblayoutComponent from "../../component/Admin/WeblayoutComponent";
-import LoadingComponent from "../../component/Common/Dashboard/LoadingComponent";
+import React from "react";
 
-const DashboardPage = () => {
-  const [loading, setLoading] = useState(true); // ✅ Fix here
-
-  useEffect(() => {
-    const timer = setTimeout(() => setLoading(false), 1000);
-    return () => clearTimeout(timer);
-  }, []);
+const UserDashboard = () => {
   return (
     <>
       {loading ? (
@@ -19,7 +11,7 @@ const DashboardPage = () => {
         <>
           <WeblayoutComponent>
             <h2 className="text-center" style={{ textDecoration: "underline" }}>
-              Admin Dashboard
+              User Dashboard
             </h2>
             <div className="container">
               <div className="d-flex justify-content-center w-100">
@@ -62,4 +54,4 @@ const DashboardPage = () => {
   );
 };
 
-export default DashboardPage;
+export default UserDashboard;

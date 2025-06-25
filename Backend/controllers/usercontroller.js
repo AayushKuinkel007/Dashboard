@@ -1,19 +1,24 @@
 const User = require("../models/usermodel");
 const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
+
+// Hardcoded JWT secret (for local/private use only)
+const jwtSecret = "your_super_secret_key";
 
 exports.sendUserData = async (req, res) => {
   try {
-    const { fname, lname, dateofbirth, email, password,role } = req.body;
+    const { fname, lname, dateofbirth, email, password, role } = req.body;
 
     console.log("Received Data:", req.body);
-    
-    const userExists = await User.findOne({email})
-    if(userExists){
+
+    const userExists = await User.findOne({ email });
+    if (userExists) {
       return res.status(400).json({
-        message:'user already exist'
-      })
+        message: "User already exists",
+      });
     }
-    const hashedPassword = await bcrypt.hash(password,16)
+
+    const hashedPassword = await bcrypt.hash(password, 16);
 
     const user = await User.create({
       fname,
@@ -21,44 +26,54 @@ exports.sendUserData = async (req, res) => {
       dateofbirth,
       email,
       password: hashedPassword,
-      role
-    })
-    if(user){
+      role,
+    });
+
+    if (user) {
       res.status(201).json({
-      _id: user._id,
-      name: user.name,
-      email: user.email,
-      role: user.role,
-      })
+        _id: user._id,
+        name: user.fname + " " + user.lname,
+        email: user.email,
+        role: user.role,
+      });
+    } else {
+      res.status(400).json({ message: "Invalid user data" });
     }
-    else{
-      res.status(400).json({ message: 'Invalid user data' });
-    }
-
-
   } catch (err) {
     console.error("Error Saving User:", err);
-    res.status(400).json({
+    res.status(500).json({
       message: "User Registration Failed",
       error: err.message,
     });
   }
 };
 
-exports.login = async(req,res)=>{
-    const {email,password} = req.body;
-    const user = await User.findOne({
-        email
-    })
-    if(!user||!await bcrypt.compare(password,user.password) ){
-        return res.status(401).json({error:"invalid credentials"})
+exports.login = async (req, res) => {
+  try {
+    const { email, password } = req.body;
+    console.log("Login attempt:", email);
+
+    const user = await User.findOne({ email });
+    console.log("Found user:", user);
+
+    if (!user) {
+      return res.status(401).json({ error: "Invalid credentials: user not found" });
     }
-    const token = jwt.sign({
-        id:user._id
-    },jwtSecret,{
-        expiresIn:'2h'
-    })
-    res.json({
-        token
-    })
-}
+
+    const isMatch = await bcrypt.compare(password, user.password);
+    console.log("Password match?", isMatch);
+
+    if (!isMatch) {
+      return res.status(401).json({ error: "Invalid credentials: wrong password" });
+    }
+
+    const token = jwt.sign({ id: user._id }, jwtSecret, { expiresIn: "2h" });
+    console.log("Token generated");
+
+    return res.json({ token });
+  } catch (err) {
+    console.error("Login Error:", err);
+    return res.status(500).json({ error: "Internal Server Error" });
+  }
+};
+

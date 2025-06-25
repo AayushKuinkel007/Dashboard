@@ -41,7 +41,11 @@ const Signup = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!formData.role) {
-      toast.error("Please select a role.");
+      toast.error("Please select a role.", {
+        position: "top-right",
+        autoClose: 3000,
+        theme: "colored",
+      });
       return;
     }
 
@@ -50,7 +54,11 @@ const Signup = () => {
 
   useEffect(() => {
     if (success) {
-      toast.success("Signup Successful!");
+      toast.success("Signup Successful!", {
+        position: "top-right",
+        autoClose: 3000,
+        theme: "colored",
+      });
       setFormData({
         fname: "",
         lname: "",
@@ -60,14 +68,17 @@ const Signup = () => {
         role: "",
       });
 
-      // ✅ Delay navigation to allow user to see the success toast
       setTimeout(() => {
         navigate("/login");
       }, 2000);
     }
 
     if (error) {
-      toast.error(error);
+      toast.error(error, {
+        position: "top-right",
+        autoClose: 3000,
+        theme: "colored",
+      });
     }
   }, [success, error, navigate]);
 

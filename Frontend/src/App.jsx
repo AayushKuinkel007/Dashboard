@@ -7,6 +7,9 @@ import Signup from "./pages/Common/Signup";
 import Login from "./pages/Common/Login";
 import Homepage from "./pages/Common/Homepage";
 import Profile from "./pages/Common/Profile";
+import PrivateRoute from "../routes/Privateroute";
+import UserDashboard from "./pages/Common/UserDashboard";
+import SellerDashboard from "./pages/Seller/SellerDashboard";
 
 const App = () => {
   return (
@@ -14,15 +17,43 @@ const App = () => {
       <BrowserRouter>
         <Routes>
           {/* Public Route */}
-          <Route path="/" element={<Homepage/>} />
-          <Route path="/login" element={<Login/>} />
-          <Route path="/signup" element={<Signup/>} />
+          <Route path="/" element={<Homepage />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/signup" element={<Signup />} />
           {/* Should be in private route */}
-          <Route path="/profile" element={<Profile/>} />
-          <Route path="/dashboard" element={<DashboardPage/>} />
+
+          {/* user */}
+          <Route path="/profile" element={<Profile />} />
+          <Route
+            path="/user"
+            element={
+              <PrivateRoute role='user'>
+                <UserDashboard />
+              </PrivateRoute>
+            }
+          />
+
+          {/* Admin */}
+          <Route
+            path="/admin"
+            element={
+              <PrivateRoute role='admin'>
+                <DashboardPage />
+              </PrivateRoute>
+            }
+          />
+
+          {/* seller */}
+          <Route
+            path="/seller"
+            element={
+              <PrivateRoute role='seller'>
+                <SellerDashboard />
+              </PrivateRoute>
+            }
+          />
           <Route path="/product-list" element={<ProductsPage />} />
           <Route path="/create-product" element={<CreateProduct />} />
-
         </Routes>
       </BrowserRouter>
     </>

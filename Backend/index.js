@@ -15,7 +15,7 @@ app.use(express.json());
 connectDB();
 
 // Routes
-app.use("/signup", userRouter);
+app.use("/users", userRouter);
 
 // Start Server
 app.listen(PORT, () => {
