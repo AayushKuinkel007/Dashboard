@@ -48,32 +48,42 @@ exports.sendUserData = async (req, res) => {
   }
 };
 
-exports.login = async (req, res) => {
-  try {
-    const { email, password } = req.body;
-    console.log("Login attempt:", email);
+exports.login = async(req,res)=>{
+    const {email,password} = req.body;
+    console.log("Login Attempt:",req.body); // ✅
 
     const user = await User.findOne({ email });
-    console.log("Found user:", user);
-
-    if (!user) {
-      return res.status(401).json({ error: "Invalid credentials: user not found" });
+    if(!user){
+        console.log("User not found"); // ✅
+        return res.status(401).json({ error: "invalid credentials" });
     }
 
     const isMatch = await bcrypt.compare(password, user.password);
-    console.log("Password match?", isMatch);
-
     if (!isMatch) {
-      return res.status(401).json({ error: "Invalid credentials: wrong password" });
+        console.log("Invalid password"); // ✅
+        return res.status(401).json({ error: "invalid credentials" });
     }
 
-    const token = jwt.sign({ id: user._id }, jwtSecret, { expiresIn: "2h" });
-    console.log("Token generated");
+    const token = jwt.sign({ id: user._id }, jwtSecret, { expiresIn: '2h' });
+    console.log("Login Successful. Token:", token); // ✅
+    res.json({ token });
+}
 
-    return res.json({ token });
+// controllers/userController.js
+
+exports.getUserProfile = async (req, res) => {
+  try {
+    // req.user should be set by the auth middleware (see below)
+    const user = await User.findById(req.user.id).select('-password'); // exclude password
+    console.log("this is from controller",req.user.id)
+    if (!user) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+
+    res.status(200).json({ user });
   } catch (err) {
-    console.error("Login Error:", err);
-    return res.status(500).json({ error: "Internal Server Error" });
+    console.error('Profile fetch error:', err.message);
+    res.status(500).json({ error: 'Server error' });
   }
 };
 

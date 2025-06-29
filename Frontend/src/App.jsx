@@ -23,11 +23,16 @@ const App = () => {
           {/* Should be in private route */}
 
           {/* user */}
-          <Route path="/profile" element={<Profile />} />
+          <Route path="/profile" element={
+            <PrivateRoute>
+            <Profile/>
+            </PrivateRoute>
+            } />
+            {/* <Route path="/profile" element={<Profile/>}/> */}
           <Route
             path="/user"
             element={
-              <PrivateRoute role='user'>
+              <PrivateRoute role="user">
                 <UserDashboard />
               </PrivateRoute>
             }
@@ -37,7 +42,7 @@ const App = () => {
           <Route
             path="/admin"
             element={
-              <PrivateRoute role='admin'>
+              <PrivateRoute role="admin">
                 <DashboardPage />
               </PrivateRoute>
             }
@@ -47,13 +52,27 @@ const App = () => {
           <Route
             path="/seller"
             element={
-              <PrivateRoute role='seller'>
+              <PrivateRoute role="seller">
                 <SellerDashboard />
               </PrivateRoute>
             }
           />
-          <Route path="/product-list" element={<ProductsPage />} />
-          <Route path="/create-product" element={<CreateProduct />} />
+          <Route
+            path="/product-list"
+            element={
+              <PrivateRoute role="admin">
+                <ProductsPage />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/create-product"
+            element={
+              <PrivateRoute role="admin">
+                <CreateProduct />
+              </PrivateRoute>
+            }
+          />
         </Routes>
       </BrowserRouter>
     </>

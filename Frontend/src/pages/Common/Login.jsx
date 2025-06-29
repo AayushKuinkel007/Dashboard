@@ -1,16 +1,14 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import LoadingComponent from "../../component/Common/Dashboard/LoadingComponent";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import axios from "axios";
 import { useNavigate } from "react-router-dom";
-import { API } from "../../utils/ApiRoute";
-import { useAuth } from "../../auth/Authcontext";
+import { AuthContext } from "../../auth/Authcontext";
 
 const Login = () => {
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
-  const { setAuth } = useAuth(); // 👈 use context to set user & token
+  const { login } = useContext(AuthContext); // fetchProfile not needed anymore
 
   useEffect(() => {
     const timer = setTimeout(() => setLoading(false), 1000);
@@ -30,50 +28,43 @@ const Login = () => {
     }));
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+const handleSubmit = async (e) => {
+  e.preventDefault();
 
-    if (!formData.email || !formData.password) {
-      toast.error("Please fill in all fields", {
-        position: "top-right",
-        autoClose: 3000,
-        theme: "colored",
-      });
-      return;
-    }
+  if (!formData.email || !formData.password) {
+    toast.error("Please fill in all fields", {
+      position: "top-right",
+      autoClose: 3000,
+      theme: "colored",
+    });
+    return;
+  }
 
-    try {
-      const response = await axios.post(`${API}users/login`, formData);
+  try {
+    await login({ email: formData.email, password: formData.password });
 
-      const { token } = response.data;
+    toast.success("Login Successful!", {
+      position: "top-right",
+      autoClose: 2000,
+      theme: "colored",
+    });
 
-      const user = { email: formData.email };
-      only;
+    setTimeout(() => {
+      navigate("/user");
+    }, 2000);
 
-      setAuth({ user, token });
-      localStorage.setItem("auth", JSON.stringify({ user, token }));
-
-      toast.success("Login Successful!", {
-        position: "top-right",
-        autoClose: 3000,
-        theme: "colored",
-      });
-
-      setTimeout(() => {
-        navigate("/user");
-      }, 2000);
-    } catch (err) {
-      const msg =
-        err.response?.data?.message ||
-        err.response?.data?.error ||
-        "Login failed. Please try again.";
-      toast.error(msg, {
-        position: "top-right",
-        autoClose: 3000,
-        theme: "colored",
-      });
-    }
-  };
+  } catch (err) {
+    const msg =
+      err.response?.data?.message ||
+      err.response?.data?.error ||
+      "Login failed. Please try again.";
+    toast.error(msg, {
+      position: "top-right",
+      autoClose: 3000,
+      theme: "colored",
+    });
+  }
+};
 
   return (
     <>

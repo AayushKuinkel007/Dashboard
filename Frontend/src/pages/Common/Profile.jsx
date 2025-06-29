@@ -1,14 +1,20 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import LoadingComponent from "../../component/Common/Dashboard/LoadingComponent";
 import reactsvg from '../../assets/react.svg'
 import { Link } from "react-router-dom";
+import { AuthContext } from "../../auth/Authcontext";
 const Profile = () => {
   const [loading, setLoading] = useState(true); // ✅ Fix here
-
+  const {user,getProfile} = useContext(AuthContext)
   useEffect(() => {
     const timer = setTimeout(() => setLoading(false), 1000);
     return () => clearTimeout(timer);
   }, []);
+
+  useEffect(()=>{
+    getProfile()
+  },[])
+  console.log(user)
   return (
     <>
       {loading ? (
