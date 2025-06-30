@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -6,21 +6,10 @@ import { useDispatch, useSelector } from "react-redux";
 import { signupUser } from "../../slices/User/signupActions";
 import LoadingComponent from "../../component/Common/Dashboard/LoadingComponent";
 import Navbar from "../../component/Common/Navbar";
+import { AuthContext } from "../../auth/Authcontext"; // 🔥 Added
 
 const Signup = () => {
   const [loadingScreen, setLoadingScreen] = useState(true);
-  const dispatch = useDispatch();
-  const navigate = useNavigate();
-
-  const { loading, error, success } = useSelector(
-    (state) => state.signedDataShow
-  );
-
-  useEffect(() => {
-    const timer = setTimeout(() => setLoadingScreen(false), 1000);
-    return () => clearTimeout(timer);
-  }, []);
-
   const [formData, setFormData] = useState({
     fname: "",
     lname: "",
@@ -30,6 +19,28 @@ const Signup = () => {
     role: "",
   });
 
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
+  const { token, user } = useContext(AuthContext); // 🔥 Context values
+
+  const { loading, error, success } = useSelector(
+    (state) => state.signedDataShow
+  );
+
+  // Auto redirect if already logged in
+  useEffect(() => {
+    if (token && user) {
+      navigate(`/${user.role}`);
+    }
+  }, [token, user, navigate]);
+
+  // Screen loader
+  useEffect(() => {
+    const timer = setTimeout(() => setLoadingScreen(false), 1000);
+    return () => clearTimeout(timer);
+  }, []);
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({
@@ -38,8 +49,9 @@ const Signup = () => {
     }));
   };
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
+
     if (!formData.role) {
       toast.error("Please select a role.", {
         position: "top-right",
@@ -56,9 +68,10 @@ const Signup = () => {
     if (success) {
       toast.success("Signup Successful!", {
         position: "top-right",
-        autoClose: 3000,
+        autoClose: 2000,
         theme: "colored",
       });
+
       setFormData({
         fname: "",
         lname: "",
@@ -84,13 +97,13 @@ const Signup = () => {
 
   return (
     <>
+      <ToastContainer />
       {loadingScreen ? (
         <LoadingComponent />
       ) : (
         <>
           <Navbar />
           <div className="container">
-            <ToastContainer />
             <div className="row mt-3">
               <h3 className="text-center">Signup</h3>
               <div className="col-md-6 offset-md-3">

@@ -8,17 +8,25 @@ import { AuthContext } from "../../auth/Authcontext";
 const Login = () => {
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
-  const { login } = useContext(AuthContext); // fetchProfile not needed anymore
-
-  useEffect(() => {
-    const timer = setTimeout(() => setLoading(false), 1000);
-    return () => clearTimeout(timer);
-  }, []);
+  const { login, token, user } = useContext(AuthContext);
 
   const [formData, setFormData] = useState({
     email: "",
     password: "",
   });
+
+  // Auto-redirect if already authenticated
+  useEffect(() => {
+    if (token && user) {
+      navigate(`/${user.role}`);
+    }
+  }, [token, user, navigate]);
+
+  // Simulated loading animation
+  useEffect(() => {
+    const timer = setTimeout(() => setLoading(false), 1000);
+    return () => clearTimeout(timer);
+  }, []);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -28,43 +36,40 @@ const Login = () => {
     }));
   };
 
-const handleSubmit = async (e) => {
-  e.preventDefault();
+  const handleSubmit = async (e) => {
+    e.preventDefault();
 
-  if (!formData.email || !formData.password) {
-    toast.error("Please fill in all fields", {
-      position: "top-right",
-      autoClose: 3000,
-      theme: "colored",
-    });
-    return;
-  }
+    if (!formData.email || !formData.password) {
+      toast.error("Please fill in all fields", {
+        position: "top-right",
+        autoClose: 3000,
+        theme: "colored",
+      });
+      return;
+    }
 
-  try {
-    await login({ email: formData.email, password: formData.password });
+    try {
+      await login({ email: formData.email, password: formData.password });
 
-    toast.success("Login Successful!", {
-      position: "top-right",
-      autoClose: 2000,
-      theme: "colored",
-    });
+      toast.success("Login Successful!", {
+        position: "top-right",
+        autoClose: 2000,
+        theme: "colored",
+      });
 
-    setTimeout(() => {
-      navigate("/user");
-    }, 2000);
-
-  } catch (err) {
-    const msg =
-      err.response?.data?.message ||
-      err.response?.data?.error ||
-      "Login failed. Please try again.";
-    toast.error(msg, {
-      position: "top-right",
-      autoClose: 3000,
-      theme: "colored",
-    });
-  }
-};
+      // No need for navigate here — useEffect will handle it
+    } catch (err) {
+      const msg =
+        err.response?.data?.message ||
+        err.response?.data?.error ||
+        "Login failed. Please try again.";
+      toast.error(msg, {
+        position: "top-right",
+        autoClose: 3000,
+        theme: "colored",
+      });
+    }
+  };
 
   return (
     <>
