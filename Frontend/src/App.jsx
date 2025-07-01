@@ -8,8 +8,9 @@ import Login from "./pages/Common/Login";
 import Homepage from "./pages/Common/Homepage";
 import Profile from "./pages/Common/Profile";
 import PrivateRoute from "../routes/Privateroute";
-import UserDashboard from "./pages/Common/UserDashboard";
 import SellerDashboard from "./pages/Seller/SellerDashboard";
+import UserDashboard from "./pages/user/UserDashboard";
+import UserAccount from "./pages/User/UserAccount";
 
 const App = () => {
   return (
@@ -22,28 +23,32 @@ const App = () => {
           <Route path="/signup" element={<Signup />} />
           {/* Should be in private route */}
 
-          {/* user */}
           <Route path="/profile" element={
             <PrivateRoute>
             <Profile/>
             </PrivateRoute>
             } />
-            {/* <Route path="/profile" element={<Profile/>}/> */}
+
+          {/* user */}
           <Route
             path="/user"
             element={
               <PrivateRoute role="user">
-                <UserDashboard />
+                <UserDashboard/>
               </PrivateRoute>
             }
           />
-
+          <Route path='/user-account' element={
+            <PrivateRoute>
+              <UserAccount/>
+            </PrivateRoute>
+          }/>
           {/* Admin */}
           <Route
             path="/admin"
             element={
               <PrivateRoute role="admin">
-                <DashboardPage />
+                <DashboardPage/>
               </PrivateRoute>
             }
           />
