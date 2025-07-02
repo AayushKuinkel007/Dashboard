@@ -1,7 +1,8 @@
 import React from "react";
-import HeaderComponent from "./Dashboard/HeaderComponent";
-import SidebarComponent from "./Dashboard/SidebarComponent";
-import FooterComponent from "./Dashboard/FooterComponent";
+import SidebarComponent from "./AdminDashboard/SidebarComponent";
+import FooterComponent from "./AdminDashboard/FooterComponent";
+import HeaderComponent from "./AdminDashboard/HeaderComponent";
+
 
 
 
