@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import LoadingComponent from "../../component/Common/Dashboard/LoadingComponent";
-import WeblayoutComponent from "../../component/Admin/WeblayoutComponent";
+import SellerWebLayout from "../../component/Seller/SellerWebLayout";
 
 const SellerDashboard = () => {
   const [loading, setLoading] = useState(true);
@@ -17,7 +17,7 @@ const SellerDashboard = () => {
         </>
       ) : (
         <>
-          <WeblayoutComponent>
+          <SellerWebLayout>
             <h2 className="text-center" style={{ textDecoration: "underline" }}>
               Seller Dashboard
             </h2>
@@ -55,7 +55,7 @@ const SellerDashboard = () => {
                 </div>
               </div>
             </div>
-          </WeblayoutComponent>
+          </SellerWebLayout>
         </>
       )}
     </>

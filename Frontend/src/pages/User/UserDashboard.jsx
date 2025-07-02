@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import LoadingComponent from "../../component/Common/Dashboard/LoadingComponent";
-import WeblayoutComponent from "../../component/Admin/WeblayoutComponent";
+import UserWebLayout from "../../component/User/UserWebLayout";
 
 const UserDashboard = () => {
     const [loading, setLoading] = useState(true);
@@ -16,7 +16,7 @@ const UserDashboard = () => {
         </>
       ) : (
         <>
-          <WeblayoutComponent>
+          <UserWebLayout>
             <h2 className="text-center" style={{ textDecoration: "underline" }}>
               User Dashboard
             </h2>
@@ -54,7 +54,7 @@ const UserDashboard = () => {
                 </div>
               </div>
             </div>
-          </WeblayoutComponent>
+          </UserWebLayout>
         </>
       )}
     </>
